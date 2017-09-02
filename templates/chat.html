@@ -56,6 +56,11 @@
                     var msg = JSON.parse(e.data);
                     messages.append(
                         $("<li class='message'>").append(
+                            $("<img>").css({
+                                width: 50,
+                                verticalAlign: "middle",
+                                margin: "2px 20px 2px 2px"
+                            }).attr("src", msg.AvatarURL),
                             $("<strong class='name'>").text(msg.Name + ": "),
                             $("<span class='text'>").text(msg.Message),
                             $("<span class='timestamp'>").text("("+msg.When+")")
