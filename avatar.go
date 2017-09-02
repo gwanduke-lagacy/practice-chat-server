@@ -1,6 +1,10 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"io/ioutil"
+	"path"
+)
 
 // ErrNoAvatarURL은 Avatar 인스턴스가 URL을 제공할 수 없을 때 제공되는 에러
 var ErrNoAvatarURL = errors.New("chat: avatar URL을 가져올 수 없습니다")
@@ -33,6 +37,30 @@ func (GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 	if userid, ok := c.userData["userid"]; ok {
 		if useridStr, ok := userid.(string); ok {
 			return "//www.gravatar.com/avatar/" + useridStr, nil
+		}
+	}
+	return "", ErrNoAvatarURL
+}
+
+type FileSystemAvatar struct{}
+
+var UseFileSystemAvatar FileSystemAvatar
+
+func (FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
+	if userid, ok := c.userData["userid"]; ok {
+		if useridStr, ok := userid.(string); ok {
+			files, err := ioutil.ReadDir("avatars")
+			if err != nil {
+				return "", ErrNoAvatarURL
+			}
+			for _, file := range files {
+				if file.IsDir() {
+					continue
+				}
+				if match, _ := path.Match(useridStr+"*", file.Name()); match {
+					return "/avatars/" + file.Name(), nil
+				}
+			}
 		}
 	}
 	return "", ErrNoAvatarURL

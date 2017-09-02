@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestAuthAvatar(t *testing.T) {
 	var authAvatar AuthAvatar
@@ -30,5 +35,21 @@ func TestGravatarAvatar(t *testing.T) {
 	}
 	if url != "//www.gravatar.com/avatar/0bc83cb571cd1c50ba6f3e8a78ef1346" {
 		t.Errorf("GravatarAvatar.GetAvatarURL은 올바르지 않게 %s를 반환했습니다.", url)
+	}
+}
+
+func TestFileSystemAvatar(t *testing.T) {
+	filename := filepath.Join("avatars", "abc.jpg")
+	ioutil.WriteFile(filename, []byte{}, 0777)
+	defer os.Remove(filename)
+	var fileSystemAvatar FileSystemAvatar
+	client := new(client)
+	client.userData = map[string]interface{}{"userid": "abc"}
+	url, err := fileSystemAvatar.GetAvatarURL(client)
+	if err != nil {
+		t.Error("FileSystemAvatar.GetAvatarURL 은 에러를 리턴해면 안된다")
+	}
+	if url != "/avatars/abc.jpg" {
+		t.Errorf("FileSystemAvatar.GetAvatarURL 은 부적절한 %s 를 리턴했습니다.", url)
 	}
 }
