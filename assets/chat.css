@@ -1,0 +1,17 @@
+#app {
+    padding-top: 30px;
+}
+
+input { display: block; }
+ul { list-style: none; }
+
+.message {
+    padding: 10px;
+}
+.message:nth-child(odd) {
+    background-color: #efefef;
+}
+
+.timestamp {
+    float: right;
+}

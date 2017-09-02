@@ -1,18 +1,29 @@
 <html>
 <head>
     <title>Chat</title>
-    <style>
-        input { display: block; }
-        ul { list-style: none; }
-    </style>
+    <link rel="stylesheet" href="/assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/chat.css">
 </head>
 <body>
-    <ul id="messages"></ul>
-    <form id="chatbox">
-        {{.UserData.name}}:<br />
-        <textarea></textarea>
-        <input type="submit" value="Send" />
-    </form>
+    <div id="app">
+        <div class="container">
+            <h1>채팅</h1>
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul id="messages"></ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <form id="chatbox">
+                        {{.UserData.name}}:<br />
+                        <textarea class="form-control"></textarea>
+                        <input type="submit" value="전송" class="form-control btn-primary" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
@@ -44,9 +55,10 @@
                 socket.onmessage = function(e) {
                     var msg = JSON.parse(e.data);
                     messages.append(
-                        $("<li>").append(
-                            $("<strong>").text(msg.Name + ": "),
-                            $("<span>").text(msg.Message)
+                        $("<li class='message'>").append(
+                            $("<strong class='name'>").text(msg.Name + ": "),
+                            $("<span class='text'>").text(msg.Message),
+                            $("<span class='timestamp'>").text("("+msg.When+")")
                         )
                     );
                 }
