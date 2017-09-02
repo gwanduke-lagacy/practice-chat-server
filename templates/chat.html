@@ -9,6 +9,7 @@
 <body>
     <ul id="messages"></ul>
     <form id="chatbox">
+        {{.UserData.name}}:<br />
         <textarea></textarea>
         <input type="submit" value="Send" />
     </form>
@@ -29,7 +30,7 @@
                     alert("오류: 소켓 연결이 없습니다.");
                     return false;
                 }
-                socket.send(msgBox.val());
+                socket.send(JSON.stringify({"Message": msgBox.val()}));
                 msgBox.val("");
                 return false;
             });
@@ -41,7 +42,13 @@
                     alert("연결이 종료됐습니다.");
                 }
                 socket.onmessage = function(e) {
-                    messages.append($("<li>").text(e.data));
+                    var msg = JSON.parse(e.data);
+                    messages.append(
+                        $("<li>").append(
+                            $("<strong>").text(msg.Name + ": "),
+                            $("<span>").text(msg.Message)
+                        )
+                    );
                 }
             }
         });
